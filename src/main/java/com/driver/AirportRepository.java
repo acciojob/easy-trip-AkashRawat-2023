@@ -8,10 +8,7 @@ import io.swagger.models.auth.In;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class AirportRepository {
@@ -40,7 +37,7 @@ public class AirportRepository {
 
         List<Integer> passengers = flightPassengerMapDb.get(flightId);
 
-        if (passengers == null) {
+        if (passengers ==  null) {
             passengers = new ArrayList<>();
             flightPassengerMapDb.put(flightId, passengers);
         }
@@ -56,22 +53,6 @@ public class AirportRepository {
         passengers.add(passengerId);
         flightPassengerMapDb.put(flightId, passengers);
         return "SUCCESS";
-//        if(flightPassengerMapDb.get(flightId).size() == flightDb.get(flightId).getMaxCapacity()){
-//            return "FAILURE";
-//        }else if(flightPassengerMapDb.get(flightId).contains(passengerId)){
-//            return "FAILURE";
-//        }
-//        if(flightPassengerMapDb.containsKey(flightId)){
-//            List<Integer> list = flightPassengerMapDb.get(flightId);
-//            list.add(passengerId);
-//            flightPassengerMapDb.put(flightId,list);
-//        }else{
-//            List<Integer> list = new ArrayList<>();
-//            list.add(passengerId);
-//            flightPassengerMapDb.put(flightId,list);
-//        }
-//        return "SUCCESS";
-
     }
     public String getLargestAirportName(){
         String name = "";
@@ -173,17 +154,11 @@ public class AirportRepository {
         //Calculate the total revenue that a flight could have
         //That is of all the passengers that have booked a flight till now and then calculate the revenue
         //Revenue will also decrease if some passenger cancels the flight
-        int revenue = 0;
-        int noOfPassenger = 0;
-        if(flightPassengerMapDb.containsKey(flightId)){
-            List<Integer>list = flightPassengerMapDb.get(flightId);
-            noOfPassenger = list.size();
-        }
-        int n = noOfPassenger;
+        List<Integer> passengers = flightPassengerMapDb.getOrDefault(flightId, Collections.emptyList());
+        int noOfPassenger = passengers.size();
         int first = 3000;
         int diff = 50;
-
-        revenue = (n/2)*(2*first + (n-1)*diff);
+        int revenue = (noOfPassenger / 2) * (2 * first + (noOfPassenger - 1) * diff);
         return revenue;
     }
 
