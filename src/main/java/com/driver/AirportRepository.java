@@ -98,9 +98,16 @@ public class AirportRepository {
     public String cancelATicket(Integer flightId,Integer passengerId){
         try{
             List<Integer> list = flightPassengerMapDb.get(flightId);
-            list.remove(passengerId);
-            flightPassengerMapDb.put(flightId,list);
-            return "SUCCESS";
+            if(list == null){
+                return "FAILURE";
+            }
+            if(list.contains(passengerId)) {
+                list.remove(passengerId);
+                flightPassengerMapDb.put(flightId, list);
+                return "SUCCESS";
+            }else{
+                return "FAILURE";
+            }
         }catch (Exception e){
             return "FAILURE";
         }
