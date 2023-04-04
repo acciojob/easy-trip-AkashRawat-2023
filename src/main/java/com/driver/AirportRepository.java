@@ -38,21 +38,39 @@ public class AirportRepository {
     }
     public String bookATicket(Integer flightId,Integer passengerId){    //FlightId & PassengerId mapping
 
-        if(flightPassengerMapDb.get(flightId).size() == flightDb.get(flightId).getMaxCapacity()){
-            return "FAILURE";
-        }else if(flightPassengerMapDb.get(flightId).contains(passengerId)){
+        List<Integer> passengers = flightPassengerMapDb.get(flightId);
+
+        if (passengers == null) {
+            passengers = new ArrayList<>();
+            flightPassengerMapDb.put(flightId, passengers);
+        }
+
+        if (passengers.size() >= flightDb.get(flightId).getMaxCapacity()) {
             return "FAILURE";
         }
-        if(flightPassengerMapDb.containsKey(flightId)){
-            List<Integer> list = flightPassengerMapDb.get(flightId);
-            list.add(passengerId);
-            flightPassengerMapDb.put(flightId,list);
-        }else{
-            List<Integer> list = new ArrayList<>();
-            list.add(passengerId);
-            flightPassengerMapDb.put(flightId,list);
+
+        if (passengers.contains(passengerId)) {
+            return "FAILURE";
         }
+
+        passengers.add(passengerId);
+        flightPassengerMapDb.put(flightId, passengers);
         return "SUCCESS";
+//        if(flightPassengerMapDb.get(flightId).size() == flightDb.get(flightId).getMaxCapacity()){
+//            return "FAILURE";
+//        }else if(flightPassengerMapDb.get(flightId).contains(passengerId)){
+//            return "FAILURE";
+//        }
+//        if(flightPassengerMapDb.containsKey(flightId)){
+//            List<Integer> list = flightPassengerMapDb.get(flightId);
+//            list.add(passengerId);
+//            flightPassengerMapDb.put(flightId,list);
+//        }else{
+//            List<Integer> list = new ArrayList<>();
+//            list.add(passengerId);
+//            flightPassengerMapDb.put(flightId,list);
+//        }
+//        return "SUCCESS";
 
     }
     public String getLargestAirportName(){
@@ -141,10 +159,14 @@ public class AirportRepository {
         if (flightDb.containsKey(flightId)) {
             Flight flight = flightDb.get(flightId);
             City city = flight.getFromCity();
-            return city.name();
-        } else {
-            return null;
+            for(Airport airport : airportDb.values()){
+                if(airport.getCity().equals(city)){
+                    return airport.getAirportName();
+                }
+            }
+
         }
+        return null;
     }
     public int calculateRevenueOfAFlight(Integer flightId){
 
