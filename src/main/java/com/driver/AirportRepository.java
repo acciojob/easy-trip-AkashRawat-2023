@@ -85,8 +85,13 @@ public class AirportRepository {
     //NOT COMPLETED ---> PLEASE COMPLETE IT
     public int getNumberOfPeopleOn(Date date, String airportName){
         int peopleCount = 0;
+        Airport airport = airportDb.get(airportName);
+        if(airport==null){
+            return 0;
+        }
+        City city = airport.getCity();
         for(Flight flight : flightDb.values()){
-            if((flight.getFromCity().equals(airportName) && flight.getFlightDate().compareTo(date) == 0) || (flight.getToCity().equals(airportName) && flight.getFlightDate().compareTo(date) == 0)){
+            if((flight.getFromCity().equals(city) && flight.getFlightDate().compareTo(date) == 0) || (flight.getToCity().equals(city) && flight.getFlightDate().compareTo(date) == 0)){
                 Integer requiredFlightId = flight.getFlightId();
                 List<Integer>list = flightPassengerMapDb.get(requiredFlightId);
                 peopleCount = peopleCount + list.size();
